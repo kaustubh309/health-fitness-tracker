@@ -1,0 +1,4 @@
+backend/fitness_tracker.db: Contains user data and early tables likely used during initial testing.
+backend/sql_app.db: The primary development database containing all active user accounts, workouts, and nutrition logs.
+sql_app.db: A duplicate schema database created when the server was accidentally executed from the project root instead of the backend folder.
+ 
