@@ -4,11 +4,6 @@ from app.api.v1 import auth, users, workouts, nutrition_api
 from app.core import database
 from app.models import models
 
-# Create tables if they don't exist. 
-# NOTE: In production, use Alembic for migrations. 
-# For dev, we will force create new columns by just running this. 
-# Since SQLite doesn't support 'ALTER TABLE' easily via create_all for existing tables,
-# Users might need to delete 'sql_app.db' to see schema changes if they don't have penting data.
 models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI(title="Health & Fitness Tracker API")
