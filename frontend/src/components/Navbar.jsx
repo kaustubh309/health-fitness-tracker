@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FaBars, FaTimes } from 'react-icons/fa';
@@ -8,6 +8,14 @@ const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [userPlan, setUserPlan] = useState('Free');
+
+    useEffect(() => {
+        if (user) {
+            const plan = localStorage.getItem(`fit_track_plan_${user.email}`) || 'Free';
+            setUserPlan(plan);
+        }
+    }, [user, location.pathname]);
 
     const handleLogout = () => {
         logout();
@@ -41,7 +49,7 @@ const Navbar = () => {
                 </Link>
 
                 {/* Desktop Menu */}
-                <div className="desktop-menu" style={{ gap: '1.5rem' }}>
+                <div className="desktop-menu" style={{ gap: '1.25rem' }}>
                     {user ? (
                         <>
                             <Link to="/about" className={`nav-link ${isActive('/about')}`}>About</Link>

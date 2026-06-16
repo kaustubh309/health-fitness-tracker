@@ -18,6 +18,7 @@ const Profile = () => {
     const [advice, setAdvice] = useState(null);
     const [msg, setMsg] = useState('');
     const [adviceError, setAdviceError] = useState('');
+    const [currentPlan, setCurrentPlan] = useState('Free');
 
     useEffect(() => {
         if (user) {
@@ -32,6 +33,9 @@ const Profile = () => {
                 current_diet: user.current_diet || '',
             });
             fetchAdvice();
+            
+            const plan = localStorage.getItem(`fit_track_plan_${user.email}`) || 'Free';
+            setCurrentPlan(plan);
         }
     }, [user]);
 
@@ -85,7 +89,25 @@ const Profile = () => {
 
                     {/* Profile Form */}
                     <div className="glass-panel">
-                        <h2 style={{ marginBottom: '1.5rem' }}>Your Profile</h2>
+                        <h2 style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                            Your Profile
+                            <span style={{
+                                fontSize: '0.85rem',
+                                padding: '0.25rem 0.75rem',
+                                borderRadius: '50px',
+                                fontWeight: '700',
+                                background: currentPlan === 'Max' 
+                                    ? 'linear-gradient(135deg, #a78bfa, #c084fc)'
+                                    : currentPlan === 'Pro'
+                                    ? 'linear-gradient(135deg, #818cf8, #38bdf8)'
+                                    : 'rgba(255, 255, 255, 0.1)',
+                                color: 'white',
+                                border: '1px solid var(--glass-border)',
+                                boxShadow: currentPlan !== 'Free' ? '0 4px 10px rgba(0, 0, 0, 0.2)' : 'none'
+                            }}>
+                                {currentPlan} Plan
+                            </span>
+                        </h2>
                         {msg && <p style={{ color: msg.includes('Error') ? 'red' : 'green', marginBottom: "10px" }}>{msg}</p>}
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">

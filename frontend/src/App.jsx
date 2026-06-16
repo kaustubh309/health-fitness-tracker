@@ -16,6 +16,7 @@ import ExerciseSuggestions from './pages/ExerciseSuggestions';
 import ExerciseTutorials from './pages/ExerciseTutorials';
 import SplashScreen from './pages/SplashScreen';
 import ChartsPage from './pages/ChartsPage';
+import Membership from './pages/Membership';
 
 const PrivateRoute = ({ children }) => {
     const { user, loading } = useAuth();
@@ -110,6 +111,14 @@ const AppContent = () => {
                 element={
                     <PrivateRoute>
                         <ChartsPage />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/membership"
+                element={
+                    <PrivateRoute>
+                        <Membership />
                     </PrivateRoute>
                 }
             />

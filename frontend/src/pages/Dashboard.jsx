@@ -1,11 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
 
 const Dashboard = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
+    const [showGreeting, setShowGreeting] = useState(false);
+    const [visitCount, setVisitCount] = useState(1);
+    const [userPlan, setUserPlan] = useState('Free');
+
+    useEffect(() => {
+        if (user) {
+            const shownKey = `fit_track_greeting_shown_${user.email}`;
+            const countKey = `fit_track_visits_${user.email}`;
+            
+            const isShown = sessionStorage.getItem(shownKey);
+            if (!isShown) {
+                const prevCount = parseInt(localStorage.getItem(countKey) || '0', 10);
+                const newCount = prevCount + 1;
+                localStorage.setItem(countKey, newCount.toString());
+                setVisitCount(newCount);
+                setShowGreeting(true);
+                sessionStorage.setItem(shownKey, 'true');
+            }
+
+            const plan = localStorage.getItem(`fit_track_plan_${user.email}`) || 'Free';
+            setUserPlan(plan);
+        }
+    }, [user]);
+
+    const getGreetingMessage = () => {
+        const name = user?.email?.split('@')[0] || 'Athlete';
+        if (visitCount === 1) {
+            return `Welcome to FitTrack, ${name}! This is your first visit. Let's start your fitness journey today! 🚀`;
+        } else if (visitCount === 2) {
+            return `Welcome back, ${name}! Great to see you for the second time! Ready for another workout? 💪`;
+        } else if (visitCount === 3) {
+            return `Welcome back, ${name}! Third time's a charm. Keep building that consistency! 🔥`;
+        } else if (visitCount === 4) {
+            return `Awesome to see you again, ${name}! That's 4 visits now. Consistency is key! 🌟`;
+        } else {
+            return `Hello champion, ${name}! You have visited us ${visitCount} times now. You're making fitness a lifestyle! 🏆`;
+        }
+    };
     const [workouts, setWorkouts] = useState([]);
     const [stats, setStats] = useState({ count: 0, duration: 0, calories: 0 });
 
@@ -64,9 +103,36 @@ const Dashboard = () => {
         <div style={{ minHeight: '100vh', paddingBottom: '2rem' }}>
             <Navbar />
             <div className="container animate-fade-in" style={{ paddingTop: '2rem' }}>
-                <h1 style={{ marginBottom: '1.5rem', fontSize: '2rem' }}>
-                    Hello, <span style={{ background: 'linear-gradient(to right, #f87171, #f472b6)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>{user?.email?.split('@')[0]}!</span>
-                </h1>
+                <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center', 
+                    marginBottom: '1.5rem',
+                    flexWrap: 'wrap',
+                    gap: '1rem'
+                }}>
+                    <h1 style={{ margin: 0, fontSize: '2rem' }}>
+                        Hello, <span style={{ background: 'linear-gradient(to right, #f87171, #f472b6)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>{user?.email?.split('@')[0]}!</span>
+                    </h1>
+                    {userPlan !== 'Max' && (
+                        <Link 
+                            to="/membership" 
+                            className="btn btn-primary btn-inline" 
+                            style={{ 
+                                background: 'linear-gradient(135deg, #f87171, #f472b6)',
+                                boxShadow: '0 4px 15px rgba(248, 113, 113, 0.3)',
+                                padding: '0.6rem 1.5rem',
+                                fontSize: '0.95rem',
+                                margin: 0,
+                                borderRadius: '8px',
+                                display: 'inline-flex',
+                                alignItems: 'center'
+                            }}
+                        >
+                            Upgrade Plan
+                        </Link>
+                    )}
+                </div>
 
                 {/* Nutrition Call to Action */}
                 <div className="glass-panel responsive-flex-row" style={{ marginBottom: '2rem', background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(129, 140, 248, 0.1))' }}>
@@ -186,6 +252,80 @@ const Dashboard = () => {
                     )}
                 </div>
             </div>
+
+            {/* Greeting Dialog Modal */}
+            {showGreeting && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0, left: 0, right: 0, bottom: 0,
+                    background: 'rgba(15, 23, 42, 0.8)',
+                    backdropFilter: 'blur(8px)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 1000,
+                    padding: '1rem'
+                }}>
+                    <div className="glass-panel animate-fade-in" style={{
+                        width: '100%',
+                        maxWidth: '450px',
+                        textAlign: 'center',
+                        padding: '2.5rem 2rem',
+                        border: '1px solid rgba(255, 255, 255, 0.15)',
+                        background: 'rgba(30, 41, 59, 0.95)'
+                    }}>
+                        <div style={{
+                            fontSize: '3rem',
+                            marginBottom: '1rem',
+                            background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
+                            WebkitBackgroundClip: 'text',
+                            color: 'transparent',
+                            display: 'inline-block'
+                        }}>
+                            👋
+                        </div>
+                        <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem', color: 'white' }}>
+                            {visitCount === 1 ? 'Welcome!' : 'Welcome Back!'}
+                        </h2>
+                        <p style={{ 
+                            color: 'var(--text-main)', 
+                            fontSize: '1.05rem', 
+                            lineHeight: '1.6', 
+                            marginBottom: '2rem',
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            padding: '1rem',
+                            borderRadius: '12px',
+                            border: '1px solid rgba(255, 255, 255, 0.05)'
+                        }}>
+                            {getGreetingMessage()}
+                        </p>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                            <button 
+                                onClick={() => {
+                                    setShowGreeting(false);
+                                    navigate('/membership');
+                                }}
+                                className="btn btn-primary"
+                                style={{ 
+                                    width: '100%',
+                                    background: 'linear-gradient(135deg, #f87171, #f472b6)',
+                                    boxShadow: '0 4px 15px rgba(248, 113, 113, 0.3)'
+                                }}
+                            >
+                                Upgrade to Premium
+                            </button>
+                            <button 
+                                onClick={() => setShowGreeting(false)}
+                                className="btn btn-outline"
+                                style={{ width: '100%' }}
+                            >
+                                Maybe Later
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
