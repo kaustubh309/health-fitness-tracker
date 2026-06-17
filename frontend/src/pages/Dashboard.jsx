@@ -201,9 +201,9 @@ const Dashboard = () => {
                 )}
 
                 {/* Workout List */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem' }}>
+                <div style={{ display: 'flex', flexWrap: 'nowrap', overflowX: 'auto', gap: '1.5rem' }}>
                     {workouts.map(w => (
-                        <div key={w.id} className="glass-panel animate-fade-in" style={{ padding: '1.5rem', position: 'relative', display: 'flex', flexDirection: 'column' }}>
+                        <div key={w.id} className="glass-panel animate-fade-in" style={{ padding: '1.5rem', position: 'relative', display: 'flex', flexDirection: 'column', minWidth: '350px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '0.5rem' }}>
                                 <h3 style={{ margin: 0, fontSize: '1.4rem' }}>{w.title}</h3>
                                 <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
@@ -300,7 +300,7 @@ const Dashboard = () => {
                             {getGreetingMessage()}
                         </p>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        <div className="workout-list">
                             <button 
                                 onClick={() => {
                                     setShowGreeting(false);
