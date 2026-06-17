@@ -13,7 +13,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",           # local dev
         "http://127.0.0.1:5173",           # local dev (alternate)
-        "https://your-frontend-name.onrender.com",  # ← REPLACE after Step 4
+        "https://health-fitness-tracker-1-uzzm.onrender.com", 
     ],
     allow_credentials=True,
     allow_methods=["*"],
