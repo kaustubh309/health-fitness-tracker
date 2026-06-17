@@ -299,8 +299,4 @@ option {
   gap: 1.5rem;
   padding: 0.5rem 0;
 }
-
-/* Ensure cards have minimum width */
-.glass-panel {
-  min-width: 300px;
-}
+
