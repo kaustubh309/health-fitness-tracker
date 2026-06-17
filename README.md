@@ -144,4 +144,78 @@ health_fitness_tracker_FULL/
 ## 🎨 Design Philosophy
 FitTrack was designed to move away from boring, clinical health apps. By utilizing a dark mode interface with vibrant `#a78bfa` (Purple) and `#38bdf8` (Cyan) primary colors, users are greeted with an app that feels like a modern SaaS product. Semi-transparent glass panels create a sense of depth, and micro-animations ensure the application feels highly responsive and alive.
 
+The **workout activity cards** on the Dashboard are displayed in a **horizontal scrollable row**, adapting gracefully to all screen sizes via responsive CSS.
+
+---
+
+## ☁️ Deployment on Render
+
+FitTrack is configured to deploy as **two separate services** on [Render](https://render.com) — a FastAPI backend (Web Service) and a React/Vite frontend (Static Site).
+
+### Prerequisites
+*   Your code pushed to a GitHub repository.
+*   A free [Render](https://render.com) account.
+
+### Step 1 — Deploy the Backend (Web Service)
+
+| Setting | Value |
+|---|---|
+| **Root Directory** | `backend` |
+| **Runtime** | Python 3 |
+| **Build Command** | `pip install -r requirements.txt` |
+| **Start Command** | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
+
+**Environment Variables to set on Render:**
+
+| Variable | Value |
+|---|---|
+| `DATABASE_URL` | Internal Postgres URL from a Render PostgreSQL instance |
+| `SECRET_KEY` | A long random string — generate with `python -c "import secrets; print(secrets.token_hex(32))"` |
+
+> The app defaults to SQLite locally, but switches to PostgreSQL automatically when `DATABASE_URL` is set — preventing data loss between Render restarts.
+
+### Step 2 — Deploy the Frontend (Static Site)
+
+| Setting | Value |
+|---|---|
+| **Root Directory** | `frontend` |
+| **Build Command** | `npm install && npm run build` |
+| **Publish Directory** | `dist` |
+
+**Environment Variable to set on Render:**
+
+| Variable | Value |
+|---|---|
+| `VITE_API_URL` | Full URL of your backend service, e.g. `https://fittrack-backend.onrender.com` |
+
+### Step 3 — Finish CORS
+
+After your frontend is deployed, copy its `.onrender.com` URL and update `backend/app/main.py`:
+
+```python
+allow_origins=[
+    "http://localhost:5173",
+    "https://your-actual-frontend-name.onrender.com",  # ← paste real URL here
+],
+```
+
+Then commit, push — Render will auto-redeploy.
+
+### Step 4 — Verify
+
+Visit your frontend URL and test: register, log a workout, add nutrition, check analytics.
+
+> **Note:** Render free-tier web services **spin down after 15 minutes of inactivity** and take ~30–50 seconds to wake. This is normal — the static frontend has no such delay.
+
+### Quick Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| `Application failed to respond` on backend | Check start command: `app.main:app` assumes `backend/app/main.py` with `app = FastAPI(...)` |
+| Frontend loads but API calls fail (CORS error) | Complete Step 3 — add the real frontend URL to CORS and redeploy backend |
+| API calls return 404 | Check `VITE_API_URL` has no trailing slash and matches the backend URL exactly |
+| Login works locally but not deployed | Confirm `SECRET_KEY` env var is set on Render and matches what the backend expects |
+
+---
+
 Enjoy tracking your health! 🚀

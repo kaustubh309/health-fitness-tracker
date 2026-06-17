@@ -5,3 +5,5 @@ aiosqlite
 python-jose
 passlib[bcrypt]
 pydantic
+psycopg2-binary
+python-multipart

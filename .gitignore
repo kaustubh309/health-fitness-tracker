@@ -1,16 +1,68 @@
-# Python
+# ============================================================
+# SENSITIVE / SECRET FILES  ← never commit these
+# ============================================================
+
+# Real environment variable files (contain SECRET_KEY, DATABASE_URL, etc.)
+.env
+.env.local
+.env.production
+.env.staging
+backend/.env
+frontend/.env
+
+# Admin login credentials — plain-text passwords
+admin_credentials.txt
+
+# Deployment guide extracted text (no need in repo)
+guide_text.txt
+
+# Database files — contain real user data (passwords, workouts, nutrition logs)
+*.db
+*.sqlite
+*.sqlite3
+sql_app.db
+fitness_tracker.db
+backend/sql_app.db
+backend/fitness_tracker.db
+
+# Database file list (documents internal db layout)
+database_files_list.txt
+
+# ============================================================
+# PYTHON
+# ============================================================
 __pycache__/
 *.pyc
 *.pyo
-venv/
+*.pyd
+*.pycache
+.pytest_cache/
+.mypy_cache/
 
-# Node
+# Virtual environment
+venv/
+.venv/
+env/
+ENV/
+
+# ============================================================
+# NODE / FRONTEND
+# ============================================================
 node_modules/
 dist/
+.cache/
 
-# Environment
-.env
-
-# OS
+# ============================================================
+# OS GENERATED
+# ============================================================
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# ============================================================
+# EDITOR / IDE
+# ============================================================
+.vscode/
+.idea/
+*.swp
+*.swo

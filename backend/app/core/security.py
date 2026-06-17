@@ -3,8 +3,10 @@ from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
-# SECRET_KEY should be in env, but for this demo using a hardcoded one
-SECRET_KEY = "supersecretkey"
+# Read SECRET_KEY from environment variable for production (set on Render).
+# Falls back to a local dev value — NEVER use the default in production.
+import os
+SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey-change-me-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
